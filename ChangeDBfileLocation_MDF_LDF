@@ -1,0 +1,40 @@
+*/Useful links https://blog.sqlauthority.com/2018/09/02/how-to-move-sql-server-mdf-and-ldf-files-interview-question-of-the-week-189/
+https://www.mssqltips.com/sqlservertip/6689/sql-server-move-database-files/ /*
+
+
+---To know the current location of the files
+SELECT name AS FileLogicalName, physical_name AS FileLocation
+FROM sys.master_files 
+WHERE database_id = DB_ID(N'DBAUtil') 
+
+-- Step 1: Set database offline
+USE master
+GO
+ALTER DATABASE DBAUtil SET OFFLINE
+
+--- Step 2: physically move the MDF and LDF to a new destinations
+
+--- Step 3: Apply the new path (assume you moved the file from D to E and your file names are DBAUtil.mdf and DBAUtil_Log.ldf)
+
+USE master
+GO
+
+ALTER DATABASE DBAUtil
+MODIFY FILE (NAME = DBAUtil, FILENAME = 'E\MSSQL\UserDBData\DBAUtil.mdf')
+
+ALTER DATABASE TestDB 
+MODIFY FILE (NAME = DBAUtil_log, FILENAME = 'E:\MSSQL\UserDBLog\DBAUtil_log.ldf')
+
+*/"NAME" = logical name of the file and "FILENAME" = the new path of the file.*/
+
+---Step 4: Bring the database ONLINE
+
+USE master
+GO
+ALTER DATABASE DBAUtil SET ONLINE
+
+---Step 5: Verify the new destination using the first command
+
+SELECT name AS FileLogicalName, physical_name AS FileLocation
+FROM sys.master_files 
+WHERE database_id = DB_ID(N'DBAUtil') 
