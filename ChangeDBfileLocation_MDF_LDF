@@ -42,3 +42,9 @@ ALTER DATABASE DBAUtil SET ONLINE
 SELECT name AS FileLogicalName, physical_name AS FileLocation
 FROM sys.master_files 
 WHERE database_id = DB_ID(N'DBAUtil') 
+
+
+---Make sure the service account has access to the new drive
+(go to service.msc, check the service name and copy it, go to the drive (E) and grant read write permission - do this by going to "property" in the disk and "security", then "add", paste the copied service account name 
+- while doing this make sure you selected "object type" including service account and computer, on "from this location" choose the machine (computer) name)
+Source: https://www.youtube.com/watch?v=RR5GIghJ7oc
